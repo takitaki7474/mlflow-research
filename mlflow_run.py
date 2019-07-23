@@ -2,7 +2,7 @@ import torch
 import mlflow
 import mlflow.pytorch
 # X data
-x_data = torch.Tensor([[1.0], [2.0], [3.0]])
+x_data = torch.Tensor([[2.0], [3.0], [3.0]])
 # Y data with its expected value: labels
 y_data = torch.Tensor([[2.0], [4.0], [6.0]])
 # Partial Model example modified from Sung Kim
