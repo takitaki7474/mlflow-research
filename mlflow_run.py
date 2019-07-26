@@ -30,3 +30,5 @@ if __name__=="__main__":
     train_data = []
     for x_train, y_train in zip(img_data, label_data):
         train_data.append((x_train, y_train))
+
+    dataloader = torch.utils.data.DataLoader(train_data, batch_size=128, shuffle=True)
