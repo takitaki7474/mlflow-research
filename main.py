@@ -6,9 +6,11 @@ import torch
 import torch.utils.data
 import processing_table
 import get_data
+import mlflow_run
 
 TRAIN_FOLDER_NAME = "./train_img"
 IMG_NUM_BY_CLASS = 300
+EPOCH = 50
 
 
 if __name__=="__main__":
@@ -32,3 +34,5 @@ if __name__=="__main__":
         train_data.append((x_train, y_train))
 
     dataloader = torch.utils.data.DataLoader(train_data, batch_size=128, shuffle=True)
+
+    mlflow_run.train(EPOCH, dataloader)
