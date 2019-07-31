@@ -11,16 +11,16 @@ class Net(nn.Module):
         self.conv4 = nn.Conv2d(32, 32, 3, 3, 1)
         self.conv5 = nn.Conv2d(32, 32, 3, 3, 1)
         self.conv6 = nn.Conv2d(32, 32, 3, 3, 1)
-        self.fc1 = nn.Linear(32 * 3 * 3, 512)
+        self.fc1 = nn.Linear(1, 512)
         self.fc2 = nn.Linear(512, n_out)
 
-    def forword(self, x):
-        h = F.relu(self.conv1(x))
-        h = nn.MaxPool2d(F.relu(self.conv2(h)), 2)
+    def forward(self, h):
+        h = F.relu(self.conv1(h))
+        h = F.max_pool2d(F.relu(self.conv2(h)), 2)
         h = F.relu(self.conv3(h))
-        h = nn.MaxPool2d(F.relu(self.conv4(h)), 2)
+        h = F.max_pool2d(F.relu(self.conv4(h)), 2)
         h = F.relu(self.conv5(h))
-        h = nn.MaxPool2d(F.relu(self.conv6(h)), 2)
+        h = F.max_pool2d(F.relu(self.conv6(h)), 2)
         h = F.dropout(F.relu(self.fc1(h)))
         h = self.fc2(h)
         return h
