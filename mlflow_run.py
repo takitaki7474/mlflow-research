@@ -20,6 +20,7 @@ def train(epoch, trainloader):
             optimizer.zero_grad()
 
             outputs = net(inputs)
+            print("gggggggggggggg",outputs.size())
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
