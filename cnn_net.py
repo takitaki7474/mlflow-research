@@ -11,7 +11,7 @@ class Net(nn.Module):
         self.conv4 = nn.Conv2d(32, 32, 3, 3, 1)
         self.conv5 = nn.Conv2d(32, 32, 3, 3, 1)
         self.conv6 = nn.Conv2d(32, 32, 3, 3, 1)
-        self.fc1 = nn.Linear(1, 512)
+        self.fc1 = nn.Linear(4096, 512)
         self.fc2 = nn.Linear(512, n_out)
 
     def forward(self, h):
@@ -21,6 +21,23 @@ class Net(nn.Module):
         h = F.max_pool2d(F.relu(self.conv4(h)), 2)
         h = F.relu(self.conv5(h))
         h = F.max_pool2d(F.relu(self.conv6(h)), 2)
+        h = h.view(-1,4096)
+        h = F.dropout(F.relu(self.fc1(h)))
+        h = self.fc2(h)
+        return h
+
+class Net0(nn.Module):
+    def __init__(self, n_out):
+        super(Net0, self).__init__()
+        self.conv1 = nn.Conv2d(3, 32, 5)
+        self.conv2 = nn.Conv2d(32, 32, 5)
+        self.fc1 = nn.Linear(4*4*32, 64)
+        self.fc2 = nn.Linear(64, n_out)
+
+    def forward(self, h):
+        h = F.max_pool2d(F.relu(self.conv1(h)), 2)
+        h = F.max_pool2d(F.relu(self.conv2(h)), 2)
+        h = h.view(-1,4*4*32)
         h = F.dropout(F.relu(self.fc1(h)))
         h = self.fc2(h)
         return h
@@ -48,3 +65,21 @@ class Net2(nn.Module):
         x = F.relu(self.fc2(x))  # fc2->relu
         x = self.fc3(x)
         return x
+
+class Net3(nn.Module):
+    def __init__(self, n_out):
+        super(Net3, self).__init__()
+
+        self.conv1 = nn.Conv2d(3,10,5)
+        self.conv2 = nn.Conv2d(10,20,5)
+
+        self.fc1 = nn.Linear(20*4*4, 50)
+        self.fc2 = nn.Linear(50,n_out)
+
+    def forward(self, h):
+        h = F.max_pool2d(F.relu(self.conv1(h)), 2)
+        h = F.max_pool2d(F.relu(self.conv2(h)), 2)
+        h = h.view(-1,20*4*4)
+        h = F.relu(self.fc1(h))
+        h = self.fc2(h)
+        return F.log_softmax(h)
