@@ -10,6 +10,9 @@ def train(epoch, trainloader):
     criterion = nn.MSELoss()
     optimizer = optim.Adam(net.parameters(), lr=0.001)
 
+    print(list(net.parameters()))
+
+
     for e in range(epoch):
 
         running_loss = 0.0
@@ -20,7 +23,7 @@ def train(epoch, trainloader):
             optimizer.zero_grad()
 
             outputs = net(inputs)
-            print("gggggggggggggg",outputs.size())
+            print(outputs.size())
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
