@@ -21,6 +21,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 # Training loop
 for epoch in range(500):
     # Forward pass: Compute predicted y by passing x to the model
+    print(x_data.size())
     y_pred = model(x_data)
     # Compute and print loss
     loss = criterion(y_pred, y_data)
