@@ -49,7 +49,9 @@ net = Net()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-for epoch in range(2):  # loop over the dataset multiple times
+epochs = 10
+
+for epoch in range(epochs):  # loop over the dataset multiple times
 
     running_loss = 0.0
     for i, data in enumerate(trainloader, 0):
@@ -94,12 +96,23 @@ for data in testloader:
         class_correct[label] += c[i]
         class_total[label] += 1
 
+result_dic = {}
+
 for i in range(10):
-    print('Accuracy of %5s : %2d %%' % (
-        classes[i], 100 * class_correct[i].item() / class_total[i]))
+    print('Accuracy of %5s : %2d %%' % (classes[i], 100 * class_correct[i].item() / class_total[i]))
+    result_dic[classes[i]] = class_correct[i].item() / class_total[i]
+
+
+class_correct_sum = sum([i.item() for i in class_correct])
+class_total_sum = sum(class_total)
+accuracy = class_correct_sum/class_total_sum
+
+print("Accuracy: {0}".format(accuracy))
 
 print('Finished Testing')
 
 with mlflow.start_run() as run:
-    mlflow.log_param("epochs", 2)
+    mlflow.log_param("accuracy", accuracy)
+    mlflow.log_param("accuracy_by_class", result_dic)
+    mlflow.log_param("epoch", epochs)
     mlflow.pytorch.log_model(net, "models")
