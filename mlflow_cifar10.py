@@ -5,6 +5,8 @@ from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import mlflow
+import mlflow.pytorch
 
 transform = transforms.Compose(
     [transforms.ToTensor(),
@@ -77,3 +79,27 @@ for epoch in range(2):  # loop over the dataset multiple times
             running_loss = 0.0
 
 print('Finished Training')
+
+class_correct = list(0. for i in range(10))
+class_total = list(0. for i in range(10))
+for data in testloader:
+    images, labels = data
+    #print("images type : ", type(images))
+    #print("images.shape : ", images.shape)
+    outputs = net(Variable(images))
+    _, predicted = torch.max(outputs.data, 1)
+    c = (predicted == labels).squeeze()
+    for i in range(4):
+        label = labels[i]
+        class_correct[label] += c[i]
+        class_total[label] += 1
+
+for i in range(10):
+    print('Accuracy of %5s : %2d %%' % (
+        classes[i], 100 * class_correct[i].item() / class_total[i]))
+
+print('Finished Testing')
+
+with mlflow.start_run() as run:
+    mlflow.log_param("epochs", 2)
+    mlflow.pytorch.log_model(net, "models")
